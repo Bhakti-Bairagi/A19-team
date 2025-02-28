@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .todo-container {
+            width: 400px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .todo-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .todo-input {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .todo-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .todo-input button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .todo-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .todo-list li {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .todo-list li:last-child {
+            border-bottom: none;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="todo-container">
+        <div class="todo-header">
+            <h2>To-Do List</h2>
+        </div>
+        <div class="todo-input">
+            <input type="text" id="taskInput" placeholder="Add a new task...">
+            <button id="addTaskBtn">Add</button>
+        </div>
+        <ul class="todo-list" id="taskList">
+            </ul>
+    </div>
+
+    <script>
+        const taskInput = document.getElementById('taskInput');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const taskList = document.getElementById('taskList');
+
+        addTaskBtn.addEventListener('click', addTask);
+
+        function addTask() {
+            const taskText = taskInput.value.trim();
+            if (taskText === '') return;
+
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                <span>${taskText}</span>
+                <div>
+                    <button class="delete-btn">Delete</button>
+                </div>
+            `;
+
+            taskList.appendChild(listItem);
+            taskInput.value = '';
+
+            // Add event listeners to the new list item
+            listItem.addEventListener('click', toggleComplete);
+            listItem.querySelector('.delete-btn').addEventListener('click', deleteTask);
+        }
+
+        function toggleComplete(event) {
+            if (event.target.classList.contains('delete-btn')) return; //Prevent from triggering on delete button
+            const taskSpan = event.currentTarget.querySelector('span');
+            taskSpan.classList.toggle('completed');
+        }
+
+        function deleteTask(event) {
+            event.stopPropagation(); //Prevent parent click events
+            const listItem = event.target.parentElement.parentElement;
+            taskList.removeChild(listItem);
+        }
+
+        taskInput.addEventListener('keypress', function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevent form submission
+                addTaskBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
